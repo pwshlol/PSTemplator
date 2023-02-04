@@ -10,7 +10,7 @@ This project is based on the module template found [here](https://github.com/pws
 
 ## FEATURES
 
-### Template engine
+### [Template engine](https://github.com/pwshlol/PSTemplator)
 
 - Download prebuilt templates from pwshlol's github repositories
 - Import/Download prebuilt user made templates (locally or on github)
