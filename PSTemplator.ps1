@@ -29,7 +29,7 @@ New-Project -FromDirectory `
 
 # Test from Github URI
 New-Project -FromGithubURI `
-    -TemplateGithubURI "https://github.com/pwshlol/PSTModuleAdvanced" `
+    -TemplateGithubURI "https://github.com/pwshlol/PSTModule" `
     -DestinationRoot "$($PSScriptRoot | Split-Path)" `
     -RepositoryName 'PSTModuleTestGithubURI' `
     -ReplaceTable $ReplaceTable `
