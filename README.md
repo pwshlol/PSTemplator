@@ -58,7 +58,7 @@ Import-Module .\PSTemplator\PSTemplator.psd1 -Force
     ProjectGUID              = (New-Guid).ToString()
 }
 New-Project -FromDirectory `
-    -TemplateDirectoryPath "$($PSScriptRoot | Split-Path)\PSTModule" `
+    -TemplateDirectoryPath "C:\The\Directory\Where\The\Template\Is\At" `
     -DestinationRoot "C:\The\Directory\Where\I\Want\My\Project" `
     -RepositoryName 'NewCoolProject' `
     -ReplaceTable $ReplaceTable
