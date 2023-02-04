@@ -4,8 +4,8 @@
         {
             "type": "PowerShell",
             "request": "launch",
-            "name": "PStemplator",
-            "script": "${workspaceRoot}\\PSTemplator.ps1",
+            "name": "Build",
+            "script": "${workspaceRoot}\\build.ps1 build",
             "args": [],
             "cwd": "${workspaceRoot}"
         }
