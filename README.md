@@ -19,6 +19,7 @@ This project is based on the module template found [here](https://github.com/pws
 
 ### [PSTModule](https://github.com/pwshlol/PSTModule)
 
+- Crossplatform (Windows, Mac and linux) for both dev environnement and end-user target
 - Manifest/module generation
 - Private/Public functions
 - Vscode configuration/ ScriptAnalyzer rules / markdown lint
