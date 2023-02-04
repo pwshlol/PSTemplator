@@ -34,6 +34,8 @@ Actually the module is not released/published.
 
 You can still use it as standalone module but it need to be downloaded manually until we release/publish it.
 
+If you add the module to one of your modules paths you can use Import-Module PSTemplator but it will need to be updated manually until we release it.
+
 Fully interactive use :
 
 ```powershell
