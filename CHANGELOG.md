@@ -1,0 +1,18 @@
+# Full Change Log
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## Unreleased
+
+### Added
+
+- Initial project creation
+- Download prebuilt templates from pwshlol's github repositories
+- Import/Download prebuilt user made templates (locally or on github)
+- Dynamically find the required terms that needs to be replaced based on a json
+- Interactive mode (Ask for missing parameters for the new project)
+
+## [0.1.0]
