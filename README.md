@@ -43,6 +43,14 @@ Import-Module .\PSTemplator\PSTemplator.psd1 -Force
 New-Project
 ```
 
+Semi interactive use (Autodownload Module template and ask for the rest) :
+
+```powershell
+Import-Module .\PSTemplator\PSTemplator.psd1 -Force
+New-Project -FromGithubURI `
+-TemplateGithubURI "https://github.com/pwshlol/PSTModule"
+```
+
 Import from local directory with predefined options:
 
 ```powershell
