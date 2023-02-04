@@ -26,7 +26,7 @@ This project is based on the module template found [here](https://github.com/pws
 - Github templates ( bug report creation, features demand )
 - Github actions for PSScriptAnalyzer, Pester tests on all platforms ( pwsh linux , mac, windows & windows powershell ) on push/pull request and/or manually
 - Basic Pester tests integrated for the module itself
-- Generic
+- Generic files used in projects (MIT license, changelog, gitignore/attributes, ScriptAnalyzer rules etc.)
 
 ## HOW TO USE
 
