@@ -1,7 +1,7 @@
 ﻿Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 $ProgressPreference = 'SilentlyContinue'
-$VerbosePreference = 'SilentlyContinue'
+$VerbosePreference = 'Continue'
 
 Set-Location $PSScriptRoot
 Import-Module .\PSTemplator\PSTemplator.psd1 -Force
@@ -18,7 +18,7 @@ Import-Module .\PSTemplator\PSTemplator.psd1 -Force
     ProjectRepositoryOwner   = 'pwshlol'
     ProjectGUID              = (New-Guid).ToString()
 }
-
+<#
 # Test from directory
 New-Project -FromDirectory `
     -TemplateDirectoryPath "$($PSScriptRoot | Split-Path)\PSTModule" `
@@ -26,11 +26,10 @@ New-Project -FromDirectory `
     -RepositoryName 'PSTModuleTestDirectory' `
     -ReplaceTable $ReplaceTable `
     -Force
-
+#>
 # Test from Github URI
 New-Project -FromGithubURI `
     -TemplateGithubURI "https://github.com/pwshlol/PSTModule" `
     -DestinationRoot "$($PSScriptRoot | Split-Path)" `
     -RepositoryName 'PSTModuleTestGithubURI' `
-    -ReplaceTable $ReplaceTable `
     -Force

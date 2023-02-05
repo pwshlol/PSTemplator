@@ -64,25 +64,61 @@
         $RepositoryName = Read-Host "$($Localization.AskRepositoryName)"
     }
 
-    # Search for ReplaceTable
+    # Search for ReplaceTable because user did not used it as an argument
     if (!$ReplaceTable)
     {
-        # Find ReplaceTable from json
-        $json = Get-ChildItem $TemplateDirectoryPath | Where-Object { $_.Name -eq 'templator.json' }
-        if ($null -eq $json)
+        # Search for json in directory
+        if ($FromDirectory)
         {
-            Write-Error $($Localization.AskRepositoryName)
-        }
-
-        # Ask for each generic terms to replace
-        [psobject]$ReplaceTable = [ordered]@{}
-        $obj = Get-Content $json | ConvertFrom-Json -Depth 2
-        $obj.ToReplace.GetEnumerator() | ForEach-Object {
-            if ($_ -eq 'ProjectGUID') { $ReplaceTable['ProjectGUID'] = (New-Guid).ToString() }
-            else
+            # Find ReplaceTable from json
+            $json = Get-ChildItem $TemplateDirectoryPath | Where-Object { $_.Name -eq 'templator.json' }
+            if ($null -eq $json)
             {
-                $read = Read-Host $_
-                $ReplaceTable[$_] = $read
+                Write-Error $($Localization.ErrorCannotFindJson)
+            }
+
+            # Ask for each generic terms to replace
+            [psobject]$ReplaceTable = [ordered]@{}
+            $obj = Get-Content $json | ConvertFrom-Json -Depth 2
+            $obj.ToReplace.GetEnumerator() | ForEach-Object {
+                if ($_ -eq 'ProjectGUID') { $ReplaceTable['ProjectGUID'] = (New-Guid).ToString() }
+                else
+                {
+                    $read = Read-Host $_
+                    $ReplaceTable[$_] = $read
+                }
+            }
+        }
+        # Search for json into github template's directory
+        if ($FromGithubURI)
+        {
+            # Find ReplaceTable from json online
+            try
+            {
+                $response = Invoke-WebRequest -UseBasicParsing -Uri $TemplateGithubURI | Select-Object Links
+                $selected = $response.Links | Where-Object { $_.outerHTML -like "*templator.json*" } | Select-Object -Index 0
+                $request = "https://raw.githubusercontent.com$($selected.href)"
+                $request = $request -replace '/blob', ''
+                $json = (Invoke-WebRequest -Uri $request).Content | ConvertFrom-Json
+            }
+            catch
+            {
+                Write-Error $($Localization.ErrorCannotFindJson)
+            }
+            if ($null -eq $json)
+            {
+                Write-Error $($Localization.ErrorCannotFindJson)
+            }
+
+            # Ask for each generic terms to replace
+            [psobject]$ReplaceTable = [ordered]@{}
+            $json.ToReplace.GetEnumerator() | ForEach-Object {
+                if ($_ -eq 'ProjectGUID') { $ReplaceTable['ProjectGUID'] = (New-Guid).ToString() }
+                else
+                {
+                    $read = Read-Host $_
+                    $ReplaceTable[$_] = $read
+                }
             }
         }
     }
