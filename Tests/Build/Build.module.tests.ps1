@@ -88,80 +88,126 @@ Describe 'Git tagging' -Skip {
     }
 }
 
-Describe 'Testing a new project from github template' {
-    BeforeAll {
-        Import-Module $manifestData -Force
-
-        [hashtable]$ReplaceTable = @{
-            ProjectName              = 'PSTModuleTest'
-            ProjectAuthor            = 'innovatodev'
-            ProjectCompany           = 'pwshlol'
-            ProjectMail              = 'contact@pwsh.lol'
-            ProjectDescription       = 'A powershell module doing something.'
-            ProjectVersion           = '0.1.0'
-            ProjectPowerShellVersion = '5.1'
-            ProjectCopyright         = '2023 pwshlol, all rights reserved.'
-            ProjectRepositoryOwner   = 'pwshlol'
-            ProjectGUID              = (New-Guid).ToString()
-        }
-
-        $project = New-Project -FromGithubURI `
-            -TemplateGithubURI "https://github.com/pwshlol/PSTModule" `
-            -DestinationRoot $env:TMP `
-            -RepositoryName 'PSTModuleTestGithubURI' `
-            -ReplaceTable $ReplaceTable `
-            -Force
-
-        $project
-        Write-Host "[SUCCESS] $env:TMP\PSTModuleTestGithubURI" -ForegroundColor Green
-        Remove-Item "$env:TMP\PSTModuleTestGithubURI" -Recurse -Confirm:$false -Force
-    }
-
+# Should not throw
+Describe 'Testing a new project from github template [NOT THROW]' {
     It 'Has not thrown an error' {
-        { $project } | Should -Not -Throw
+        {
+            Import-Module $manifestData -Force
+            [hashtable]$ReplaceTable = @{
+                ProjectName              = 'PSTModuleTest'
+                ProjectAuthor            = 'innovatodev'
+                ProjectCompany           = 'pwshlol'
+                ProjectMail              = 'contact@pwsh.lol'
+                ProjectDescription       = 'A powershell module doing something.'
+                ProjectVersion           = '0.1.0'
+                ProjectPowerShellVersion = '5.1'
+                ProjectCopyright         = '2023 pwshlol, all rights reserved.'
+                ProjectRepositoryOwner   = 'pwshlol'
+                ProjectGUID              = (New-Guid).ToString()
+            }
+            New-Project -FromGithubURI `
+                -TemplateGithubURI "https://github.com/pwshlol/PSTModule" `
+                -DestinationRoot $env:TMP `
+                -RepositoryName 'PSTModuleTestGithubURI' `
+                -ReplaceTable $ReplaceTable `
+                -Force
+            Write-Host "[SUCCESS] $env:TMP\PSTModuleTestGithubURI" -ForegroundColor Green
+            Remove-Item "$env:TMP\PSTModuleTestGithubURI" -Recurse -Confirm:$false -Force
+        } | Should -Not -Throw
     }
 }
 
-Describe 'Testing a new project from local directory' {
-    BeforeAll {
-        Import-Module $manifestData -Force
-
-        [hashtable]$ReplaceTable = @{
-            ProjectName              = 'PSTModuleTest'
-            ProjectAuthor            = 'innovatodev'
-            ProjectCompany           = 'pwshlol'
-            ProjectMail              = 'contact@pwsh.lol'
-            ProjectDescription       = 'A powershell module doing something.'
-            ProjectVersion           = '0.1.0'
-            ProjectPowerShellVersion = '5.1'
-            ProjectCopyright         = '2023 pwshlol, all rights reserved.'
-            ProjectRepositoryOwner   = 'pwshlol'
-            ProjectGUID              = (New-Guid).ToString()
-        }
-
-        # Search for the zip direct URI
-        $response = Invoke-WebRequest -UseBasicParsing -Uri 'https://github.com/pwshlol/PSTModule' | Select-Object Links
-        $selected = $response.Links | Where-Object { $_.outerHTML -like "*.zip*" } | Select-Object -Index 0
-
-        # Download it
-        Invoke-RestMethod "https://github.com/$($selected.href)" -OutFile "$env:TEMP\template.zip"
-
-        # Extract it
-        Expand-Archive "$env:TEMP\template.zip" "$env:TEMP\template"
-
-        $project = New-Project -FromDirectory `
-            -TemplateDirectoryPath "$env:TEMP\template" `
-            -DestinationRoot $env:TMP `
-            -RepositoryName 'PSTModuleTestGithubURI' `
-            -ReplaceTable $ReplaceTable `
-            -Force
-
-        $project
-        Write-Host "[SUCCESS] $env:TMP\PSTModuleTestGithubURI" -ForegroundColor Green
-        Remove-Item "$env:TMP\PSTModuleTestGithubURI" -Recurse -Confirm:$false -Force
+# Should throw
+Describe 'Testing a new project from github template [THROW]' {
+    It 'Has thrown an error' {
+        {
+            Import-Module $manifestData -Force
+            [hashtable]$ReplaceTable = @{
+                ProjectName              = 'PSTModuleTest'
+                ProjectAuthor            = 'innovatodev'
+                ProjectCompany           = 'pwshlol'
+                ProjectMail              = 'contact@pwsh.lol'
+                ProjectDescription       = 'A powershell module doing something.'
+                ProjectVersion           = '0.1.0'
+                ProjectPowerShellVersion = '5.1'
+                ProjectCopyright         = '2023 pwshlol, all rights reserved.'
+                ProjectRepositoryOwner   = 'pwshlol'
+                ProjectGUID              = (New-Guid).ToString()
+            }
+            New-Project -FromGithubURI `
+                -TemplateGithubURI "https://github.com/pwshlol/PSTModuleNOP" `
+                -DestinationRoot $env:TMP `
+                -RepositoryName 'PSTModuleTestGithubURI' `
+                -ReplaceTable $ReplaceTable `
+                -Force
+            Write-Host "[SUCCESS] $env:TMP\PSTModuleTestGithubURI" -ForegroundColor Green
+            Remove-Item "$env:TMP\PSTModuleTestGithubURI" -Recurse -Confirm:$false -Force
+        } | Should -Throw
     }
+}
 
+# Should not throw
+Describe 'Testing a new project from local directory [NOT THROW]' {
     It 'Has not thrown an error' {
-        { $project } | Should -Not -Throw
+        {
+            Import-Module $manifestData -Force
+            [hashtable]$ReplaceTable = @{
+                ProjectName              = 'PSTModuleTest'
+                ProjectAuthor            = 'innovatodev'
+                ProjectCompany           = 'pwshlol'
+                ProjectMail              = 'contact@pwsh.lol'
+                ProjectDescription       = 'A powershell module doing something.'
+                ProjectVersion           = '0.1.0'
+                ProjectPowerShellVersion = '5.1'
+                ProjectCopyright         = '2023 pwshlol, all rights reserved.'
+                ProjectRepositoryOwner   = 'pwshlol'
+                ProjectGUID              = (New-Guid).ToString()
+            }
+            $response = Invoke-WebRequest -UseBasicParsing -Uri 'https://github.com/pwshlol/PSTModule' | Select-Object Links
+            $selected = $response.Links | Where-Object { $_.outerHTML -like "*.zip*" } | Select-Object -Index 0
+            Invoke-RestMethod "https://github.com/$($selected.href)" -OutFile "$env:TEMP\template.zip"
+            Expand-Archive "$env:TEMP\template.zip" "$env:TEMP\template"
+            New-Project -FromDirectory `
+                -TemplateDirectoryPath "$env:TEMP\template" `
+                -DestinationRoot $env:TMP `
+                -RepositoryName 'PSTModuleTestDirectory' `
+                -ReplaceTable $ReplaceTable `
+                -Force
+            Write-Host "[SUCCESS] $env:TMP\PSTModuleTestDirectory" -ForegroundColor Green
+            Remove-Item "$env:TMP\PSTModuleTestDirectory" -Recurse -Confirm:$false -Force
+        } | Should -Not -Throw
+    }
+}
+
+# Should throw
+Describe 'Testing a new project from local directory [THROW]' {
+    It 'Has thrown an error' {
+        {
+            Import-Module $manifestData -Force
+            [hashtable]$ReplaceTable = @{
+                ProjectName              = 'PSTModuleTest'
+                ProjectAuthor            = 'innovatodev'
+                ProjectCompany           = 'pwshlol'
+                ProjectMail              = 'contact@pwsh.lol'
+                ProjectDescription       = 'A powershell module doing something.'
+                ProjectVersion           = '0.1.0'
+                ProjectPowerShellVersion = '5.1'
+                ProjectCopyright         = '2023 pwshlol, all rights reserved.'
+                ProjectRepositoryOwner   = 'pwshlol'
+                ProjectGUID              = (New-Guid).ToString()
+            }
+            $response = Invoke-WebRequest -UseBasicParsing -Uri 'https://github.com/pwshlol/PSTModuleNOP' | Select-Object Links
+            $selected = $response.Links | Where-Object { $_.outerHTML -like "*.zip*" } | Select-Object -Index 0
+            Invoke-RestMethod "https://github.com/$($selected.href)" -OutFile "$env:TEMP\template.zip"
+            Expand-Archive "$env:TEMP\template.zip" "$env:TEMP\template"
+            New-Project -FromDirectory `
+                -TemplateDirectoryPath "$env:TEMP\template" `
+                -DestinationRoot $env:TMP `
+                -RepositoryName 'PSTModuleTestDirectory' `
+                -ReplaceTable $ReplaceTable `
+                -Force
+            Write-Host "[SUCCESS] $env:TMP\PSTModuleTestDirectory" -ForegroundColor Green
+            Remove-Item "$env:TMP\PSTModuleTestDirectory" -Recurse -Confirm:$false -Force
+        } | Should -Throw
     }
 }
