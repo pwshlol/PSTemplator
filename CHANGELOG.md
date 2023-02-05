@@ -12,9 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Initial project creation
 - Download prebuilt templates from pwshlol's github repositories
 - Import/Download prebuilt user made templates (locally or on github)
-- Dynamically find the required terms that needs to be replaced based on a json
+- Dynamically find the required terms that needs to be replaced based on a json (locally or on github)
 - Interactive mode (Ask for missing parameters for the new project)
-- Test, build and publish on release
-- Test build on push and pull request
+- Test, build and publish on github release
+- Test build on push and pull request or manually
 
 ## [0.1.0]

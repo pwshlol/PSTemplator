@@ -37,31 +37,28 @@
         # Ask for template directory
         if ([string]::IsNullOrEmpty($TemplateDirectoryPath))
         {
-            $TemplateDirectoryPath = Read-Host "$($Localization.AskTemplateDirectory)"
+            $TemplateDirectoryPath = Read-Host $Localization.AskTemplateDirectory
         }
     }
     elseif ($FromGithubURI)
     {
-        if ([string]::IsNullOrEmpty($FromGithubURI))
+        # Ask for template directory
+        if ([string]::IsNullOrEmpty($TemplateGithubURI))
         {
-            # Ask for template directory
-            if ([string]::IsNullOrEmpty($TemplateGithubURI))
-            {
-                $TemplateGithubURI = Read-Host "$($Localization.AskTemplateGithubURI)"
-            }
+            $TemplateGithubURI = Read-Host $Localization.AskTemplateGithubURI
         }
     }
 
     # Ask for Destination
     if ([string]::IsNullOrEmpty($DestinationRoot))
     {
-        $DestinationRoot = Read-Host "$($Localization.AskDestinationRoot)"
+        $DestinationRoot = Read-Host $Localization.AskDestinationRoot
     }
 
     # Ask for RepositoryName
     if ([string]::IsNullOrEmpty($RepositoryName))
     {
-        $RepositoryName = Read-Host "$($Localization.AskRepositoryName)"
+        $RepositoryName = Read-Host $Localization.AskRepositoryName
     }
 
     # Search for ReplaceTable because user did not used it as an argument
@@ -74,7 +71,7 @@
             $json = Get-ChildItem $TemplateDirectoryPath | Where-Object { $_.Name -eq 'templator.json' }
             if ($null -eq $json)
             {
-                Write-Error $($Localization.ErrorCannotFindJson)
+                Write-Error $Localization.ErrorCannotFindJson
             }
 
             # Ask for each generic terms to replace
@@ -103,11 +100,11 @@
             }
             catch
             {
-                Write-Error $($Localization.ErrorCannotFindJson)
+                Write-Error $Localization.ErrorCannotFindJson
             }
             if ($null -eq $json)
             {
-                Write-Error $($Localization.ErrorCannotFindJson)
+                Write-Error $Localization.ErrorCannotFindJson
             }
 
             # Ask for each generic terms to replace
