@@ -52,6 +52,16 @@ New-Project -FromGithubURI `
 -TemplateGithubURI "https://github.com/pwshlol/PSTModule"
 ```
 
+Semi interactive use (Autodownload Module template, predefined options, ask for the terms to replace):
+
+```powershell
+Import-Module .\PSTemplator\PSTemplator.psd1 -Force
+New-Project -FromGithubURI `
+    -TemplateGithubURI "https://github.com/pwshlol/PSTModule" `
+    -DestinationRoot "C:\The\Directory\Where\I\Want\My\Project" `
+    -RepositoryName 'NewCoolProject'
+```
+
 Import from local directory with predefined options:
 
 ```powershell
@@ -75,7 +85,7 @@ New-Project -FromDirectory `
     -ReplaceTable $ReplaceTable
 ```
 
-Download from github with predefined options:
+Download from github with fully predefined options:
 
 ```powershell
 Import-Module .\PSTemplator\PSTemplator.psd1 -Force
