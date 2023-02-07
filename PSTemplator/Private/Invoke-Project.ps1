@@ -1,5 +1,4 @@
-﻿function Invoke-Project
-{
+﻿function Invoke-Project {
     [CmdletBinding()]
     param (
         # FromDirectory
@@ -23,18 +22,14 @@
         $Force
     )
     # Check for method select
-    if (-not $FromDirectory -and -not $FromGithubURI)
-    {
+    if (-not $FromDirectory -and -not $FromGithubURI) {
         Write-Error ($Localization.ErrorMustSelectMethod)
     }
 
     # Printing the parameters
-    if ($FromDirectory)
-    {
+    if ($FromDirectory) {
         Write-Host ("Template Directory : {0}" -f $TemplateDirectoryPath)
-    }
-    elseif ($FromGithubURI)
-    {
+    } elseif ($FromGithubURI) {
         Write-Host ("Template URI : {0}" -f $TemplateGithubURI)
     }
     Write-Host ("Destination : {0}" -f $DestinationRoot)
@@ -45,51 +40,37 @@
 
     # Remove last \ from DestinationRoot if exist
     [string]$rootDir = $DestinationRoot
-    if ($rootDir.EndsWith("\"))
-    {
+    if ($rootDir.EndsWith("\")) {
         $rootDir = $rootDir.Substring(0, $rootDir.Length - 1)
     }
     $rootDir = "$rootDir\$RepositoryName"
 
     # Check if project already exist in this location
-    if (Test-Path $rootDir)
-    {
-        if ($Force)
-        {
+    if (Test-Path $rootDir) {
+        if ($Force) {
             Write-Verbose "Overwriting $rootDir"
             Remove-Item $rootDir -Recurse -Confirm:$false -Force
-        }
-        else { Write-Error ($Localization.ErrorProjectAlreadyExist) }
+        } else { Write-Error ($Localization.ErrorProjectAlreadyExist) }
     }
 
     New-Item $rootDir -ItemType Directory | Out-Null
-    if ($FromDirectory)
-    {
-        if (!(Test-Path $TemplateDirectoryPath))
-        {
+    if ($FromDirectory) {
+        if (!(Test-Path $TemplateDirectoryPath)) {
             Write-Error ($Localization.ErrorNoTemplate)
-        }
-        else
-        {
+        } else {
             # Copy files from template to root directory
-            try
-            {
+            try {
                 Copy-Item -Path "$TemplateDirectoryPath\*" `
                     -Destination $rootDir -Container -Recurse -Confirm:$false
-            }
-            catch
-            {
+            } catch {
                 Write-Error ($Localization.ErrorTemplateCopy)
             }
 
             # Counting number of files in template
             $templateCount = (Get-ChildItem -Path $TemplateDirectoryPath -Recurse | Measure-Object).Count
         }
-    }
-    elseif ($FromGithubURI)
-    {
-        try
-        {
+    } elseif ($FromGithubURI) {
+        try {
             # Search for the zip direct URI
             $response = Invoke-WebRequest -UseBasicParsing -Uri $TemplateGithubURI | Select-Object Links
             $selected = $response.Links | Where-Object { $_.outerHTML -like "*.zip*" } | Select-Object -Index 0
@@ -99,9 +80,7 @@
 
             # Extract it
             Expand-Archive "$env:TEMP\template.zip" "$env:TEMP\template"
-        }
-        catch
-        {
+        } catch {
             Write-Error ($Localization.ErrorCantDownload)
         }
 
@@ -109,13 +88,10 @@
         $getFirstDir = Get-ChildItem "$env:TEMP\template" | Select-Object -First 1
 
         # Copy files from template to root directory
-        try
-        {
+        try {
             Copy-Item -Path "$getFirstDir\*" `
                 -Destination $rootDir -Recurse -Confirm:$false
-        }
-        catch
-        {
+        } catch {
             Write-Error ($Localization.ErrorTemplateCopy)
         }
 
@@ -125,45 +101,37 @@
 
     # Test if number of files match
     $rootDirCount = (Get-ChildItem -Path $rootDir -Recurse | Measure-Object).Count
-    if ($rootDirCount -ne $templateCount)
-    {
+    if ($rootDirCount -ne $templateCount) {
         Write-Error ($Localization.ErrorFilesCountNotMatch -f $templateCount, $rootDirCount)
-    }
-    else { Write-Host ($Localization.SuccessCopy -f $rootDirCount) -ForegroundColor DarkGreen }
+    } else { Write-Host ($Localization.SuccessCopy -f $rootDirCount) -ForegroundColor DarkGreen }
 
     # Replace files content and name
     foreach ($item in Get-ChildItem -Path "$rootDir\*" -Recurse |
-        Where-Object { $_.PSIsContainer -eq $false })
-    {
+        Where-Object { $_.PSIsContainer -eq $false }) {
         Invoke-Replace -Path $item -replace $ReplaceTable
     }
 
     # Rename directories names
     foreach ($item in Get-ChildItem "$rootDir\*" -Recurse |
-        Where-Object { $_.PSIsContainer -eq $true } )
-    {
+        Where-Object { $_.PSIsContainer -eq $true } ) {
         Invoke-Replace -Path $item -replace $ReplaceTable
     }
 
     # Test if project still contains generic terms
-    foreach ($item in Get-ChildItem -Path "$rootDir\*" -Recurse)
-    {
+    foreach ($item in Get-ChildItem -Path "$rootDir\*" -Recurse) {
         Invoke-Check -Path $item -replace $ReplaceTable
     }
 
     # Clean downloaded files
-    if (Test-Path "$env:TEMP\template.zip")
-    {
+    if (Test-Path "$env:TEMP\template.zip") {
         Remove-Item "$env:TEMP\template.zip" -Recurse -Force -Confirm:$false
     }
-    if (Test-Path "$env:TEMP\template")
-    {
+    if (Test-Path "$env:TEMP\template") {
         Remove-Item "$env:TEMP\template" -Recurse -Force -Confirm:$false
     }
 
     # Remove templator.json
-    if (Test-Path "$rootDir\templator.json")
-    {
+    if (Test-Path "$rootDir\templator.json") {
         Remove-Item "$rootDir\templator.json" -Force -Confirm:$false
     }
 

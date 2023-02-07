@@ -34,8 +34,7 @@ If PSTModuleTest.txt file content ProjectName it throw an error
 https://github.com/pwshlol/PSTemplator
 
 #>
-function Invoke-Check
-{
+function Invoke-Check {
     [CmdletBinding()]
     param (
         # Path
@@ -50,38 +49,30 @@ function Invoke-Check
     )
     $IsError = $false
     Write-Verbose "Testing $Path"
-    if (Test-Path $Path)
-    {
+    if (Test-Path $Path) {
         $get = Get-Item $Path
-        if ($get -is [System.IO.FileInfo])
-        {
+        if ($get -is [System.IO.FileInfo]) {
             $content = Get-Content -Path $get -Raw
             $ReplaceTable.GetEnumerator() | ForEach-Object {
-                if ($content -like "*$($_.Key)*")
-                {
+                if ($content -like "*$($_.Key)*") {
                     Write-Warning ($Localization.WarningFileStillContainsTerms -f $get.FullName)
                 }
             }
             Set-Content -Path $get -Value $content.TrimEnd()
             $ReplaceTable.GetEnumerator() | ForEach-Object {
-                if ($get.BaseName -like "*$($_.Key)*")
-                {
+                if ($get.BaseName -like "*$($_.Key)*") {
                     Write-Warning ($Localization.WarningFileStillContainsTerms -f $get.FullName)
                 }
             }
-        }
-        elseif ($get -is [System.IO.DirectoryInfo])
-        {
+        } elseif ($get -is [System.IO.DirectoryInfo]) {
             $ReplaceTable.GetEnumerator() | ForEach-Object {
-                if ($get.BaseName -like "*$($_.Key)*")
-                {
+                if ($get.BaseName -like "*$($_.Key)*") {
                     Write-Warning ($Localization.WarningFileStillContainsTerms -f $get.FullName)
                 }
             }
         }
     }
-    if ($IsError)
-    {
+    if ($IsError) {
         Throw ($Localization.ErrorProjectStillContainsTerms)
     }
 }
